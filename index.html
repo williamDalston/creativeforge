@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hook Spin | CreativeForge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), 8px 8px 0px 0px #ffffff; }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), 8px 8px 0px 0px #ffffff; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .shake-active { animation: shake 0.5s; animation-iteration-count: infinite; }
+        .pulse-cta { animation: pulse-glow 2s ease-in-out infinite; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        body { font-family: 'Courier New', monospace; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-pink': '#ff00ff',
+                        'neon-blue': '#00ffff',
+                        'dark-bg': '#1a0b2e',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #00ffff',
+                        'neo-hover': '4px 4px 0px 0px #00ffff',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark-bg text-white font-mono min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div x-data="hookMachine()" x-init="init()" class="max-w-2xl w-full">
+        
+        <div class="mb-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-neon-pink mb-2" style="text-shadow: 4px 4px 0px #ffffff;">
+                HOOK SPIN
+            </h1>
+            <p class="text-gray-300 mb-2">Forged at creativeforge.site</p>
+            <div class="text-neon-blue text-sm font-bold" x-show="spinCount > 0">
+                <span x-text="spinCount.toLocaleString()"></span> hooks generated today
+            </div>
+        </div>
+
+        <div class="bg-black border-4 border-neon-blue p-8 mb-8 shadow-neo relative overflow-hidden min-h-[200px] flex items-center justify-center text-center">
+            <div class="absolute inset-0 opacity-10 pointer-events-none"></div>
+            
+            <h2 x-text="currentHook" :class="{'blur-sm': spinning}" class="text-2xl md:text-3xl font-bold leading-tight relative z-10 transition-all duration-100">
+                Are you ready to go viral?
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+            
+            <button @click="spin()" 
+                    :class="{'shake-active': spinning}"
+                    class="bg-neon-pink text-black text-3xl font-black py-6 border-4 border-white shadow-[8px_8px_0px_0px_#ffffff] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:scale-95 pulse-cta">
+                <span x-text="spinning? 'SPINNING...' : 'SPIN FOR HOOK'"></span>
+            </button>
+
+            <!-- Social Proof Banner -->
+            <div x-show="spinCount >= 3" x-transition class="bg-neon-blue text-black text-center py-3 border-4 border-white font-bold fade-in">
+                ✨ You're on fire! Get all 500+ hooks below
+            </div>
+
+            <!-- Main CTA Section - Enhanced -->
+            <div class="bg-white text-black p-8 border-4 border-neon-blue mt-8 text-center fade-in">
+                <h3 class="text-2xl font-black mb-2 text-neon-pink">GET THE COMPLETE CHEATSHEET</h3>
+                <p class="font-bold mb-4 text-lg">500+ Proven Viral Hooks + Templates</p>
+                
+                <!-- Benefits List -->
+                <ul class="text-left mb-6 space-y-2 text-sm font-semibold max-w-md mx-auto">
+                    <li class="flex items-start">
+                        <span class="text-neon-blue mr-2">✓</span>
+                        <span>Never run out of content ideas again</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-neon-blue mr-2">✓</span>
+                        <span>Save hours of brainstorming time</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-neon-blue mr-2">✓</span>
+                        <span>Proven hooks that get 10x more views</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-neon-blue mr-2">✓</span>
+                        <span>Instant access via Notion or CSV</span>
+                    </li>
+                </ul>
+
+                <!-- Primary CTA Button -->
+                <a href="https://buy.stripe.com/5kQ28ka9R4yPbCDgsUb7y00" 
+                   class="inline-block w-full bg-neon-pink text-black text-xl font-black py-4 px-6 border-4 border-black shadow-[8px_8px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:scale-95 mb-3">
+                    GET ALL 500+ HOOKS → $9
+                </a>
+
+                <!-- Trust Signals -->
+                <div class="space-y-2 mt-4">
+                    <p class="text-xs font-bold text-gray-700">
+                        🔒 Secure Payment via Stripe • ⚡ Instant Access • 💰 One-Time Payment
+                    </p>
+                    <p class="text-xs text-gray-500 italic">
+                        Join 1,000+ creators using these hooks to go viral
+                    </p>
+                </div>
+            </div>
+
+            <!-- Secondary CTA - Floating Style -->
+            <div class="sticky bottom-4 mt-8 md:hidden">
+                <a href="https://buy.stripe.com/5kQ28ka9R4yPbCDgsUb7y00" 
+                   class="block bg-neon-pink text-black text-lg font-black py-4 px-6 border-4 border-white shadow-[6px_6px_0px_0px_#ffffff] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:scale-95 text-center pulse-cta">
+                    GET 500+ HOOKS → $9
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function hookMachine() {
+            return {
+                spinning: false,
+                currentHook: "Click SPIN to generate a viral hook...",
+                spinCount: 0,
+                hooks: [
+                    "This website feels illegal to know.",
+                    "Here is the cheat code for.",
+                    "I tried for 30 days...",
+                    "Why nobody is buying your [Product].",
+                    "3 tools that replaced my.",
+                    "Don't scroll past if you want.",
+                    "The secret to isn't what you think.",
+                    "How to get without [Pain Point].",
+                    "My toxic trait is thinking I can.",
+                    "Stop doing this if you want to grow.",
+                    "The one thing that changed everything.",
+                    "I wish someone told me this earlier.",
+                    "This is why you're not getting results.",
+                    "The mistake everyone makes with.",
+                    "How I went from to in 90 days.",
+                    "The hidden feature nobody knows about.",
+                    "Why I stopped doing and started.",
+                    "This changed how I think about.",
+                    "The truth nobody wants to hear about.",
+                    "If you only do one thing today, do this.",
+                    "The biggest lie about is.",
+                    "How to 10x your without.",
+                    "This is what actually works for.",
+                    "Why you should quit trying to.",
+                    "The formula for that always works.",
+                    "What I learned from failing at.",
+                    "The shortcut nobody talks about.",
+                    "How to get without spending.",
+                    "This is the real reason why.",
+                    "The one rule that changed my.",
+                    "Why everyone is wrong about.",
+                    "How I discovered the secret to.",
+                    "This will save you hours of.",
+                    "The mindset shift that changed everything.",
+                    "What happens when you stop.",
+                    "The beginner mistake that kills your."
+                ],
+                spin() {
+                    if (this.spinning) return;
+                    this.spinning = true;
+                    
+                    // Rapidly change text to simulate spinning
+                    let interval = setInterval(() => {
+                        this.currentHook = this.hooks[Math.floor(Math.random() * this.hooks.length)];
+                    }, 50);
+
+                    // Stop after 1 second
+                    setTimeout(() => {
+                        clearInterval(interval);
+                        this.spinning = false;
+                        this.currentHook = this.hooks[Math.floor(Math.random() * this.hooks.length)];
+                        this.spinCount++;
+                        // Save to localStorage for persistence
+                        localStorage.setItem('hookSpinCount', this.spinCount);
+                    }, 800);
+                },
+                init() {
+                    // Load spin count from localStorage
+                    const saved = localStorage.getItem('hookSpinCount');
+                    if (saved) {
+                        this.spinCount = parseInt(saved) || 0;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
